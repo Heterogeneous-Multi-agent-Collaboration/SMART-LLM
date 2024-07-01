@@ -1,3 +1,6 @@
 openai
 ai2thor
 scipy
+langchain-community
+langchain
+langgraph
