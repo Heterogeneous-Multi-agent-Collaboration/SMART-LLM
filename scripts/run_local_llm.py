@@ -95,15 +95,17 @@ if __name__ == "__main__":
     for task in test_tasks:
         curr_prompt =  f"{prompt}\n\n# Task Description: {task}\n\n Please generate everything in pythonic style."
         # Reference: https://llama.meta.com/docs/model-cards-and-prompt-formats/meta-llama-3/
-        prompt_template = f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>{curr_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+        prompt_template = f"""
+        <|begin_of_text|><|start_header_id|>user<|end_header_id|>{curr_prompt}
+        Remember that your output would be appended to the template provided in the prompt. 
+        You should refer to the examples provided for coding and planning.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+        """
         # Testing
         with open(f"./logs/prompt_templates/decomposed_plan.txt", 'w') as h:
             h.write(prompt_template)
         text = LM(prompt_template, args.model, frequency_penalty=0.0)
         # text = LM(prompt_template, args.model, max_tokens=1300, frequency_penalty=0.0)
         decomposed_plan.append(text)
-
-    print(decomposed_plan) # Issue: model outputs '###############################'
 
     print ("Generating Allocation Solution...")
 
@@ -132,7 +134,17 @@ if __name__ == "__main__":
         curr_prompt += f"\n# SOLUTION  \n"
 
         system_prompt = """
-You are a Robot Task Allocation Expert. Determine whether the subtasks must be performed sequentially or in parallel, or a combination of both based on your reasoning. In the case of Task Allocation based on Robot Skills alone - First check if robot teams are required. Then Ensure that robot skills or robot team skills match the required skills for the subtask when allocating. Make sure that condition is met. In the case of Task Allocation based on Mass alone - First check if robot teams are required. Then Ensure that robot mass capacity or robot team combined mass capacity is greater than or equal to the mass for the object when allocating. Make sure that condition is met. In both the Task Task Allocation based on Mass alone and Task Allocation based on Skill alone, if there are multiple options for allocation, pick the best available option by reasoning to the best of your ability.
+You are a Robot Task Allocation Expert. 
+Determine whether the subtasks must be performed sequentially or in parallel, 
+or a combination of both based on your reasoning. 
+In the case of Task Allocation based on Robot Skills alone - First check if robot teams are required. 
+Then Ensure that robot skills or robot team skills match the required skills for the subtask when allocating. 
+Make sure that condition is met. In the case of Task Allocation based on Mass alone - First check if robot teams are required. 
+Then Ensure that robot mass capacity or robot team combined mass capacity is greater than or equal to the mass for the object when allocating. 
+Make sure that condition is met. In both the Task Task Allocation based on Mass alone and Task Allocation based on Skill alone, 
+if there are multiple options for allocation, pick the best available option by reasoning to the best of your ability.
+Remember that your output would be appended to the template provided in the prompt. 
+You should refer to the examples provided for coding and planning.
                         """
         prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system_prompt}<|eot_id|>
         <|start_header_id|>user<|end_header_id|>{curr_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
@@ -167,12 +179,12 @@ You are a Robot Task Allocation Expert. Determine whether the subtasks must be p
         system_prompt = "You are a Robot Task Allocation Expert"
 
         prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system_prompt}<|eot_id|>
-        <|start_header_id|>user<|end_header_id|>{curr_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
+        <|start_header_id|>user<|end_header_id|>{curr_prompt}
+        Remember that your output would be appended to the template provided in the prompt. 
+        You should refer to the examples provided for coding and planning.
+        <|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
 
         text = LM(prompt_template, args.model, max_tokens=1400, frequency_penalty=0.4)
-
-        # Testing
-        print(text)
 
         code_plan.append(text)
 
