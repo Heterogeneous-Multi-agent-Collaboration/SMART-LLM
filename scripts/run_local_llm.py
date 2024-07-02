@@ -19,7 +19,7 @@ from run_llm import get_ai2_thor_objects
 def LM(prompt, model, max_tokens=128, temperature=0, stop=None, logprobs=1, frequency_penalty=0):
     # Using LangChain
     llm = Ollama(
-        model=model, num_ctx=max_tokens, temperature=temperature, stop=stop, repeat_penalty=frequency_penalty
+        model=model, num_ctx=max_tokens, temperature=temperature, stop=stop
         )
     response = llm.invoke(prompt)
     return response
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--floor-plan", type=int, required=True)
     parser.add_argument("--model", type=str, default="llama3", 
-                        choices=['llama3', 'llama3:70b'])
+                        choices=['llama3', 'llama3:text'])
         
     parser.add_argument("--prompt-decompse-set", type=str, default="train_task_decompose", 
                         choices=['train_task_decompose'])
