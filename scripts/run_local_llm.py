@@ -98,12 +98,13 @@ if __name__ == "__main__":
         prompt_template = f"""
         <|begin_of_text|><|start_header_id|>user<|end_header_id|>{curr_prompt}
         Remember that your output would be appended to the template provided in the prompt. 
-        You should refer to the examples provided for coding and planning.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+        You must make sure that the whole output generated must be a piece of code that can be attended to the prompt.
+        Refer to the examples in the prompt so as to understand the code and planning better.
+        Take things step by step by keeping track with code annotations.
+        <|eot_id|><|start_header_id|>assistant<|end_header_id|>
         """
         # Testing
-        with open(f"./logs/prompt_templates/decomposed_plan.txt", 'w') as h:
-            h.write(prompt_template)
-        text = LM(prompt_template, args.model, frequency_penalty=0.0)
+        text = LM(prompt_template, args.model,  max_tokens=1300)
         # text = LM(prompt_template, args.model, max_tokens=1300, frequency_penalty=0.0)
         decomposed_plan.append(text)
 
@@ -143,8 +144,9 @@ Make sure that condition is met. In the case of Task Allocation based on Mass al
 Then Ensure that robot mass capacity or robot team combined mass capacity is greater than or equal to the mass for the object when allocating. 
 Make sure that condition is met. In both the Task Task Allocation based on Mass alone and Task Allocation based on Skill alone, 
 if there are multiple options for allocation, pick the best available option by reasoning to the best of your ability.
-Remember that your output would be appended to the template provided in the prompt. 
-You should refer to the examples provided for coding and planning.
+You must make sure that the whole output generated must be a piece of code that can be attended to the prompt.
+Refer to the examples in the prompt so as to understand the code and planning better.
+Take things step by step by keeping track with code annotations.
                         """
         prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system_prompt}<|eot_id|>
         <|start_header_id|>user<|end_header_id|>{curr_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
@@ -180,8 +182,9 @@ You should refer to the examples provided for coding and planning.
 
         prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system_prompt}<|eot_id|>
         <|start_header_id|>user<|end_header_id|>{curr_prompt}
-        Remember that your output would be appended to the template provided in the prompt. 
-        You should refer to the examples provided for coding and planning.
+        You must make sure that the whole output generated must be a piece of code that can be attended to the prompt.
+        Refer to the examples in the prompt so as to understand the code and planning better.
+        Take things step by step by keeping track with code annotations.
         <|eot_id|><|start_header_id|>assistant<|end_header_id|>"""
 
         text = LM(prompt_template, args.model, max_tokens=1400, frequency_penalty=0.4)
